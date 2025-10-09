@@ -79,12 +79,11 @@ COSMIC_BUCKET_SLUG=your-bucket-slug
 COSMIC_READ_KEY=your-read-key
 COSMIC_WRITE_KEY=your-write-key
 
-# Additional Required Environment Variables
-RESEND_API_KEY=your-resend-api-key
-NEXTAUTH_SECRET=your-nextauth-secret-minimum-32-characters
-NEXTAUTH_URL=http://localhost:3000
-WIDGET_SECRET=your-widget-secret-key
-```
+  # Resend Email Service (for notifications)
+  RESEND_API_KEY=re_your-resend-api-key-here
+  NOTIFICATION_EMAIL=your-email@example.com
+  
+  # NextAuth Configuration
 
 4. **Run the development server**
 ```bash
@@ -220,11 +219,28 @@ Make sure to add all environment variables in your deployment platform:
 - `COSMIC_BUCKET_SLUG`
 - `COSMIC_READ_KEY`
 - `COSMIC_WRITE_KEY`
-- `RESEND_API_KEY`
+- `RESEND_API_KEY` (Get your API key from [Resend Dashboard](https://resend.com/api-keys))
+- `NOTIFICATION_EMAIL` (Email address where you want to receive chat notifications)
 - `NEXTAUTH_SECRET`
 - `NEXTAUTH_URL` (your production URL)
 - `WIDGET_SECRET`
 
+### Setting Up Email Notifications
+
+1. **Get your Resend API Key:**
+   - Sign up at [Resend](https://resend.com)
+   - Navigate to [API Keys](https://resend.com/api-keys) in your dashboard
+   - Create a new API key
+   - Add it as `RESEND_API_KEY` in your environment variables
+
+2. **Configure notification email:**
+   - Set `NOTIFICATION_EMAIL` to the email address where you want to receive chat notifications
+   - Example: `NOTIFICATION_EMAIL=support@yourdomain.com`
+
+3. **Update email sender domain:**
+   - In `lib/email.ts`, update the `from` addresses to use your verified domain
+   - Resend requires domain verification for production use
+   - See [Resend Domains](https://resend.com/domains) for verification steps
 ## 📖 Learn More
 
 - [Cosmic Documentation](https://www.cosmicjs.com/docs)
