@@ -11,13 +11,17 @@ export interface CosmicObject {
 }
 
 // Conversation type
+// Conversation type
 export interface Conversation extends CosmicObject {
   type: 'conversations'
   metadata: {
     visitor_email?: string
     visitor_name?: string
     website_url?: string
-    status: ConversationStatus
+    status: {
+      key: string
+      value: string
+    }
     last_message?: string
     last_message_at?: string
     unread_count?: number
