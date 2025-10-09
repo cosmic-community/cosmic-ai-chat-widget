@@ -18,10 +18,7 @@ export interface Conversation extends CosmicObject {
     visitor_email?: string
     visitor_name?: string
     website_url?: string
-    status: {
-      key: string
-      value: string
-    }
+    status?: string
     last_message?: string
     last_message_at?: string
     unread_count?: number
