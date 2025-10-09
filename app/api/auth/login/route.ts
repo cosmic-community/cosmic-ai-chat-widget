@@ -5,7 +5,10 @@ export async function POST(request: Request) {
   try {
     const { email, password } = await request.json()
 
+    console.log('[LOGIN API] Login attempt:', { email, passwordLength: password?.length })
+
     if (!email || !password) {
+      console.log('[LOGIN API] Missing credentials')
       return NextResponse.json(
         { error: 'Email and password are required' },
         { status: 400 }
@@ -15,6 +18,7 @@ export async function POST(request: Request) {
     const teamMember = await verifyCredentials(email, password)
 
     if (!teamMember) {
+      console.log('[LOGIN API] Authentication failed for:', email)
       return NextResponse.json(
         { error: 'Invalid email or password' },
         { status: 401 }
@@ -22,6 +26,8 @@ export async function POST(request: Request) {
     }
 
     await createSession(teamMember)
+
+    console.log('[LOGIN API] Login successful for:', email)
 
     return NextResponse.json({
       success: true,
@@ -33,7 +39,7 @@ export async function POST(request: Request) {
       },
     })
   } catch (error) {
-    console.error('Login error:', error)
+    console.error('[LOGIN API] Error:', error)
     return NextResponse.json(
       { error: 'Authentication failed' },
       { status: 500 }

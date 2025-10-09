@@ -12,14 +12,20 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
+          console.log('[NEXTAUTH] Missing credentials')
           return null
         }
+
+        console.log('[NEXTAUTH] Authorize attempt:', { email: credentials.email })
 
         const teamMember = await verifyCredentials(credentials.email, credentials.password)
 
         if (!teamMember) {
+          console.log('[NEXTAUTH] Authorization failed')
           return null
         }
+
+        console.log('[NEXTAUTH] Authorization successful')
 
         return {
           id: teamMember.id,
