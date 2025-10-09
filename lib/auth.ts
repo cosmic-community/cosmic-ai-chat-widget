@@ -1,4 +1,4 @@
-import bcrypt from 'bcryptjs'
+import bcrypt from 'bcrypt'
 import { cookies } from 'next/headers'
 import { cosmic, hasStatus } from './cosmic'
 import { TeamMember } from '@/types'
