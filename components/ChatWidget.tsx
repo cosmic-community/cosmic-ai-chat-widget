@@ -23,6 +23,7 @@ export default function ChatWidget() {
   }, [messages])
 
   const initializeChat = async () => {
+    setIsLoading(true)
     try {
       const response = await fetch('/api/widget/init', {
         method: 'POST',
@@ -33,6 +34,10 @@ export default function ChatWidget() {
           websiteUrl: window.location.href,
         }),
       })
+
+      if (!response.ok) {
+        throw new Error('Failed to initialize chat')
+      }
 
       const data = await response.json()
       setConversationId(data.conversationId)
@@ -49,6 +54,18 @@ export default function ChatWidget() {
       ])
     } catch (error) {
       console.error('Error initializing chat:', error)
+      // Show error message to user
+      setMessages([
+        {
+          id: 'error',
+          content: 'Sorry, there was an error starting the chat. Please try again.',
+          sender: 'bot',
+          timestamp: new Date().toISOString(),
+        }
+      ])
+      setShowNamePrompt(true) // Keep the name prompt visible
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -165,20 +182,32 @@ export default function ChatWidget() {
                   <p className="text-sm text-secondary-foreground mb-4">
                     Welcome! 👋 Please tell us a bit about yourself to get started.
                   </p>
-                  <input
-                    type="text"
-                    value={visitorName}
-                    onChange={(e) => setVisitorName(e.target.value)}
-                    placeholder="Your name"
-                    className="w-full px-3 py-2 border border-border rounded-lg mb-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                  <input
-                    type="email"
-                    value={visitorEmail}
-                    onChange={(e) => setVisitorEmail(e.target.value)}
-                    placeholder="Your email (optional)"
-                    className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
+                    <input
+                      type="text"
+                      value={visitorName}
+                      onChange={(e) => setVisitorName(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && visitorName.trim()) {
+                          e.preventDefault()
+                          handleSubmit(e as any)
+                        }
+                      }}
+                      placeholder="Your name"
+                      className="w-full px-3 py-2 border border-border rounded-lg mb-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                    <input
+                      type="email"
+                      value={visitorEmail}
+                      onChange={(e) => setVisitorEmail(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && visitorName.trim()) {
+                          e.preventDefault()
+                          handleSubmit(e as any)
+                        }
+                      }}
+                      placeholder="Your email (optional)"
+                      className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
                 </div>
               </div>
             ) : (
