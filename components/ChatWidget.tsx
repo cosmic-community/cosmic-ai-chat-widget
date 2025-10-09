@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import ReactMarkdown from 'react-markdown'
 import { ChatMessage } from '@/types'
-
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>([])
@@ -101,7 +101,8 @@ export default function ChatWidget() {
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/messages', {
+      // Save the user message first
+      await fetch('/api/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -109,24 +110,84 @@ export default function ChatWidget() {
           content: messageContent,
           visitorName,
           visitorEmail,
-          sendAIResponse: true,
+          sendAIResponse: false, // Don't generate AI response here
         }),
       })
 
-      const data = await response.json()
+      // Create a placeholder for the AI response
+      const aiMessageId = `ai-${Date.now()}`
+      const aiPlaceholder: ChatMessage = {
+        id: aiMessageId,
+        content: '',
+        sender: 'bot',
+        timestamp: new Date().toISOString(),
+      }
+      setMessages(prev => [...prev, aiPlaceholder])
 
-      if (data.aiMessage) {
-        const botMessage: ChatMessage = {
-          id: data.aiMessage.id,
-          content: data.aiMessage.metadata.content,
-          sender: 'bot',
-          timestamp: data.aiMessage.metadata.timestamp,
+      // Now stream the AI response
+      const streamResponse = await fetch('/api/messages/stream', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          conversationId,
+          content: messageContent,
+        }),
+      })
+
+      if (!streamResponse.ok) {
+        throw new Error('Failed to get AI response')
+      }
+
+      const reader = streamResponse.body?.getReader()
+      const decoder = new TextDecoder()
+      let accumulatedText = ''
+
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+
+          const chunk = decoder.decode(value, { stream: true })
+          const lines = chunk.split('\n')
+
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              try {
+                const data = JSON.parse(line.slice(6))
+                
+                if (data.text) {
+                  accumulatedText += data.text
+                  // Update the AI message with accumulated text
+                  setMessages(prev => 
+                    prev.map(msg => 
+                      msg.id === aiMessageId 
+                        ? { ...msg, content: accumulatedText }
+                        : msg
+                    )
+                  )
+                }
+
+                if (data.done && data.messageId) {
+                  // Update with the final message ID from the server
+                  setMessages(prev => 
+                    prev.map(msg => 
+                      msg.id === aiMessageId 
+                        ? { ...msg, id: data.messageId }
+                        : msg
+                    )
+                  )
+                }
+              } catch (e) {
+                // Ignore JSON parse errors for incomplete chunks
+              }
+            }
+          }
         }
-
-        setMessages(prev => [...prev, botMessage])
       }
     } catch (error) {
       console.error('Error sending message:', error)
+      // Remove the placeholder on error
+      setMessages(prev => prev.filter(msg => !msg.id.startsWith('ai-')))
     } finally {
       setIsLoading(false)
     }
@@ -213,21 +274,27 @@ export default function ChatWidget() {
             ) : (
               <>
                 {messages.map((message) => (
-                  <div
-                    key={message.id}
-                    className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                  >
                     <div
-                      className={`max-w-[80%] p-3 rounded-lg ${
-                        message.sender === 'user'
-                          ? 'chat-message-user'
-                          : 'chat-message-bot'
-                      }`}
+                      key={message.id}
+                      className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                     >
-                      <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                      <div
+                        className={`max-w-[80%] p-3 rounded-lg ${
+                          message.sender === 'user'
+                            ? 'chat-message-user'
+                            : 'chat-message-bot'
+                        }`}
+                      >
+                        {message.sender === 'bot' ? (
+                          <div className="text-sm prose prose-sm max-w-none">
+                            <ReactMarkdown>{message.content}</ReactMarkdown>
+                          </div>
+                        ) : (
+                          <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
                 {isLoading && (
                   <div className="flex justify-start">
                     <div className="chat-message-bot max-w-[80%] p-3 rounded-lg">

@@ -1,84 +1,93 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 .chat-message-bot {
     @apply bg-secondary text-secondary-foreground;
   }
 
   /* Markdown styling for chat messages */
-  .chat-message-user h1,
-  .chat-message-user h2,
-  .chat-message-user h3,
-  .chat-message-bot h1,
-  .chat-message-bot h2,
-  .chat-message-bot h3 {
-    @apply font-bold mt-2 mb-1;
+  .chat-message-bot .prose {
+    color: inherit;
   }
 
-  .chat-message-user h1,
-  .chat-message-bot h1 {
-    @apply text-lg;
+  .chat-message-bot .prose p {
+    margin: 0.5em 0;
   }
 
-  .chat-message-user h2,
-  .chat-message-bot h2 {
-    @apply text-base;
+  .chat-message-bot .prose p:first-child {
+    margin-top: 0;
   }
 
-  .chat-message-user h3,
-  .chat-message-bot h3 {
-    @apply text-sm;
+  .chat-message-bot .prose p:last-child {
+    margin-bottom: 0;
   }
 
-  .chat-message-user p,
-  .chat-message-bot p {
-    @apply mb-2 last:mb-0;
+  .chat-message-bot .prose ul,
+  .chat-message-bot .prose ol {
+    margin: 0.5em 0;
+    padding-left: 1.5em;
   }
 
-  .chat-message-user ul,
-  .chat-message-user ol,
-  .chat-message-bot ul,
-  .chat-message-bot ol {
-    @apply ml-4 mb-2;
+  .chat-message-bot .prose li {
+    margin: 0.25em 0;
   }
 
-  .chat-message-user li,
-  .chat-message-bot li {
-    @apply mb-1;
+  .chat-message-bot .prose strong {
+    font-weight: 600;
   }
 
-  .chat-message-user code,
-  .chat-message-bot code {
-    @apply bg-black bg-opacity-10 px-1 py-0.5 rounded text-sm;
+  .chat-message-bot .prose em {
+    font-style: italic;
   }
 
-  .chat-message-user pre,
-  .chat-message-bot pre {
-    @apply bg-black bg-opacity-10 p-2 rounded my-2 overflow-x-auto;
+  .chat-message-bot .prose code {
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 0.125em 0.25em;
+    border-radius: 0.25em;
+    font-size: 0.875em;
   }
 
-  .chat-message-user pre code,
-  .chat-message-bot pre code {
-    @apply bg-transparent p-0;
+  .chat-message-bot .prose pre {
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 0.75em;
+    border-radius: 0.375em;
+    overflow-x: auto;
+    margin: 0.5em 0;
   }
 
-  .chat-message-user a,
-  .chat-message-bot a {
-    @apply underline hover:no-underline;
+  .chat-message-bot .prose pre code {
+    background-color: transparent;
+    padding: 0;
   }
 
-  .chat-message-user blockquote,
-  .chat-message-bot blockquote {
-    @apply border-l-4 border-current pl-3 my-2 italic;
+  .chat-message-bot .prose h1,
+  .chat-message-bot .prose h2,
+  .chat-message-bot .prose h3,
+  .chat-message-bot .prose h4,
+  .chat-message-bot .prose h5,
+  .chat-message-bot .prose h6 {
+    margin: 0.75em 0 0.5em 0;
+    font-weight: 600;
   }
 
-  .chat-message-user strong,
-  .chat-message-bot strong {
-    @apply font-bold;
+  .chat-message-bot .prose h1:first-child,
+  .chat-message-bot .prose h2:first-child,
+  .chat-message-bot .prose h3:first-child,
+  .chat-message-bot .prose h4:first-child,
+  .chat-message-bot .prose h5:first-child,
+  .chat-message-bot .prose h6:first-child {
+    margin-top: 0;
   }
 
-  .chat-message-user em,
-  .chat-message-bot em {
-    @apply italic;
+  .chat-message-bot .prose blockquote {
+    border-left: 3px solid currentColor;
+    padding-left: 1em;
+    margin: 0.5em 0;
+    opacity: 0.8;
+  }
+
+  .chat-message-bot .prose a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
+  .chat-message-bot .prose a:hover {
+    opacity: 0.8;
   }
