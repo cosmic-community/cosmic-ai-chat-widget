@@ -13,7 +13,6 @@ export default function LoginPage() {
             <p className="text-blue-700 text-xs mt-1">Password available in Cosmic team_members object</p>
           </div>
         </div>
-        </div>
 
         <LoginForm />
       </div>
