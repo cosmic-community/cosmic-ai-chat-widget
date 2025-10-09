@@ -1,7 +1,7 @@
 // app/api/conversations/[id]/route.ts
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { authOptions } from '@/lib/auth-config'
 import { cosmic, hasStatus } from '@/lib/cosmic'
 import { Conversation } from '@/types'
 
