@@ -55,12 +55,17 @@ export default function ChatWidget() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!inputValue.trim()) return
-
+    // Handle name prompt submission
     if (showNamePrompt) {
+      if (!visitorName.trim()) {
+        return // Require at least a name
+      }
       await initializeChat()
       return
     }
+
+    // Handle regular message submission
+    if (!inputValue.trim()) return
 
     if (!conversationId) return
 
@@ -84,7 +89,7 @@ export default function ChatWidget() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           conversationId,
-          content: messageContent, // Changed: Use stored content instead of inputValue
+          content: messageContent,
           visitorName,
           visitorEmail,
           sendAIResponse: true,
@@ -217,18 +222,22 @@ export default function ChatWidget() {
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder={showNamePrompt ? "Enter your name to start" : "Type your message..."}
+                placeholder={showNamePrompt ? "Fill in your details above, then click Start Chat" : "Type your message..."}
                 className="flex-1 px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                disabled={isLoading}
+                disabled={isLoading || showNamePrompt}
               />
               <button
                 type="submit"
-                disabled={isLoading || !inputValue.trim()}
-                className="bg-primary hover:bg-primary-hover text-primary-foreground px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isLoading || (showNamePrompt ? !visitorName.trim() : !inputValue.trim())}
+                className={`bg-primary hover:bg-primary-hover text-primary-foreground rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${showNamePrompt ? 'px-6 py-2' : 'px-4 py-2'}`}
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                </svg>
+                {showNamePrompt ? (
+                  'Start Chat'
+                ) : (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                  </svg>
+                )}
               </button>
             </div>
           </form>
