@@ -64,9 +64,12 @@ export default function ChatWidget() {
 
     if (!conversationId) return
 
+    // Store the message content before clearing input
+    const messageContent = inputValue
+
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
-      content: inputValue,
+      content: messageContent,
       sender: 'user',
       timestamp: new Date().toISOString(),
     }
@@ -81,7 +84,7 @@ export default function ChatWidget() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           conversationId,
-          content: inputValue,
+          content: messageContent, // Changed: Use stored content instead of inputValue
           visitorName,
           visitorEmail,
           sendAIResponse: true,
