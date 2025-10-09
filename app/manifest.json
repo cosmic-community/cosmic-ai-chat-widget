@@ -1,0 +1,21 @@
+{
+  "name": "Cosmic AI Chat Widget",
+  "short_name": "Chat Widget",
+  "description": "AI-powered embeddable chat widget",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
