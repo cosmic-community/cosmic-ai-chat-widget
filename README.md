@@ -181,11 +181,35 @@ The app uses Resend to send email notifications when new chat messages arrive. C
 
 ## 🔐 Team Dashboard
 
-Access the team dashboard at `/dashboard` to:
+Access the team dashboard at `/dashboard/login` to:
 - View all conversations
 - Respond to visitor messages
 - Manage team member access
 - Configure widget settings
+
+### Demo Login
+
+A demo admin account is pre-configured in your Cosmic bucket:
+- **Email**: `admin@example.com`
+- **Password**: Stored securely in the `team_members` Object Type in Cosmic
+
+To access the dashboard:
+1. Navigate to `/dashboard/login`
+2. Use the demo credentials to sign in
+3. You'll be redirected to the dashboard where you can manage conversations
+
+### Creating Additional Team Members
+
+To add more team members:
+1. Log into your Cosmic dashboard
+2. Navigate to the "Team Members" Object Type
+3. Create a new team member with:
+   - Email address
+   - Hashed password (use bcrypt with salt rounds of 10)
+   - Full name
+   - Role (Admin or Member)
+
+**Note**: Passwords must be hashed using bcrypt before storing in Cosmic. You can use the `hashPassword` utility function from `lib/auth.ts` or any bcrypt tool to generate the hash.
 
 ## 🌐 Widget Integration
 
