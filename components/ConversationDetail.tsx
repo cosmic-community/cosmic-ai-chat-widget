@@ -120,7 +120,7 @@ export default function ConversationDetail({ conversationId }: ConversationDetai
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center text-white font-bold text-xl">
-              {(conversation.metadata?.visitor_name || 'A')[0].toUpperCase()}
+                {((conversation.metadata?.visitor_name || 'A')[0] || 'A').toUpperCase()}
             </div>
             <div>
               <h2 className="text-2xl font-bold mb-1">

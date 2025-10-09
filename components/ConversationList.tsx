@@ -58,7 +58,7 @@ export default function ConversationList() {
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center text-white font-semibold">
-                    {(conversation.metadata?.visitor_name || 'A')[0].toUpperCase()}
+                    {((conversation.metadata?.visitor_name || 'A')[0] || 'A').toUpperCase()}
                   </div>
                   <div>
                     <h3 className="font-semibold">
