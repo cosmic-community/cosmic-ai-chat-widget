@@ -1,54 +1,45 @@
 import { cosmic } from './cosmic'
+import { TextStreamingResponse } from '@cosmicjs/sdk'
 
 export interface AIMessage {
-  role: 'system' | 'user' | 'assistant'
+  role: 'user' | 'assistant'
   content: string
 }
 
 export interface AIChatOptions {
   messages: AIMessage[]
-  temperature?: number
   max_tokens?: number
+  stream?: boolean
 }
 
 export interface AIResponse {
-  choices: {
-    message: {
-      content: string
-      role: string
-    }
-    finish_reason: string
-  }[]
+  text: string
   usage: {
-    prompt_tokens: number
-    completion_tokens: number
-    total_tokens: number
+    input_tokens: number
+    output_tokens: number
   }
 }
 
 export class CosmicAI {
-  async chat(options: AIChatOptions): Promise<AIResponse> {
+  async chat(options: AIChatOptions): Promise<AIResponse | TextStreamingResponse> {
     try {
-      // Using Cosmic AI to generate responses
-      // This is a simplified implementation
-      const response = await fetch(`https://api.cosmicjs.com/v3/buckets/${process.env.COSMIC_BUCKET_SLUG}/ai/chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.COSMIC_READ_KEY}`,
-        },
-        body: JSON.stringify({
-          messages: options.messages,
-          temperature: options.temperature || 0.7,
-          max_tokens: options.max_tokens || 500,
-        }),
+      // Using Cosmic AI to generate responses with the official SDK
+      const response = await cosmic.ai.generateText({
+        messages: options.messages.map(msg => ({
+          role: msg.role,
+          content: msg.content
+        })),
+        max_tokens: options.max_tokens || 500,
+        stream: options.stream || false
       })
 
-      if (!response.ok) {
-        throw new Error('AI request failed')
+      // If streaming is enabled, return the stream
+      if (options.stream) {
+        return response as TextStreamingResponse
       }
 
-      return await response.json()
+      // Otherwise return the complete response
+      return response as AIResponse
     } catch (error) {
       console.error('Cosmic AI error:', error)
       throw new Error('Failed to get AI response')
@@ -58,29 +49,42 @@ export class CosmicAI {
   async generateResponse(question: string, context?: string): Promise<string> {
     const messages: AIMessage[] = [
       {
-        role: 'system',
-        content: 'You are a helpful customer support assistant. Provide clear, friendly, and concise answers to user questions.',
-      },
+        role: 'user',
+        content: context 
+          ? `Context: ${context}\n\nQuestion: ${question}`
+          : question
+      }
     ]
 
-    if (context) {
-      messages.push({
-        role: 'system',
-        content: `Context: ${context}`,
-      })
-    }
-
-    messages.push({
-      role: 'user',
-      content: question,
-    })
-
     try {
-      const response = await this.chat({ messages })
-      return response.choices[0].message.content
+      const response = await this.chat({ messages }) as AIResponse
+      return response.text
     } catch (error) {
       console.error('Error generating AI response:', error)
       return 'I apologize, but I\'m having trouble processing your request right now. A team member will respond to you shortly.'
+    }
+  }
+
+  async streamResponse(question: string, context?: string): Promise<TextStreamingResponse> {
+    const messages: AIMessage[] = [
+      {
+        role: 'user',
+        content: context 
+          ? `Context: ${context}\n\nQuestion: ${question}`
+          : question
+      }
+    ]
+
+    try {
+      const stream = await this.chat({ 
+        messages, 
+        stream: true 
+      }) as TextStreamingResponse
+      
+      return stream
+    } catch (error) {
+      console.error('Error streaming AI response:', error)
+      throw error
     }
   }
 }

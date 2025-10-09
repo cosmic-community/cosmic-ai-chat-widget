@@ -75,10 +75,9 @@ export async function POST(request: Request) {
     // Generate AI response if enabled
     let aiMessage = null
     if (sendAIResponse) {
-      try {
-        const ai = new CosmicAI()
-        const aiResponse = await ai.generateResponse(content)
-
+        try {
+          const ai = new CosmicAI()
+          const aiResponse = await ai.generateResponse(content)
         const aiMessageResponse = await cosmic.objects.insertOne({
           type: 'messages',
           title: `AI Response ${Date.now()}`,
