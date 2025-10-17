@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
       metadata: {
         url,
         summary: '', // Will be populated by a background process
-        content: null,
+        content: '', // Changed: Use empty string instead of null for textarea field
         last_fetched: null,
         is_active: true
       }
