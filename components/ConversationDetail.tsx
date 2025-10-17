@@ -83,6 +83,13 @@ export default function ConversationDetail({ conversationId }: ConversationDetai
     }
   }
 
+  // Helper function to get status display text
+  const getStatusText = (status: string | { key: string; value: string } | undefined): string => {
+    if (!status) return 'active'
+    if (typeof status === 'string') return status
+    return status.value || status.key || 'active'
+  }
+
   if (isLoading) {
     return (
       <div className="flex justify-center py-12">
@@ -120,7 +127,7 @@ export default function ConversationDetail({ conversationId }: ConversationDetai
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center text-white font-bold text-xl">
-                {((conversation.metadata?.visitor_name || 'A')[0] || 'A').toUpperCase()}
+              {((conversation.metadata?.visitor_name || 'A')[0] || 'A').toUpperCase()}
             </div>
             <div>
               <h2 className="text-2xl font-bold mb-1">
@@ -136,11 +143,11 @@ export default function ConversationDetail({ conversationId }: ConversationDetai
           </div>
 
           <span className={`px-4 py-2 text-sm font-medium rounded-full ${
-            conversation.metadata?.status === 'active' 
+            getStatusText(conversation.metadata?.status) === 'active' 
               ? 'bg-accent/10 text-accent'
               : 'bg-gray-100 text-gray-600'
           }`}>
-            {conversation.metadata?.status || 'active'}
+            {getStatusText(conversation.metadata?.status)}
           </span>
         </div>
       </div>
