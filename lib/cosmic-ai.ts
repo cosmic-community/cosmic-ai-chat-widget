@@ -132,7 +132,7 @@ Examples of questions that don't need full content:
         analysis = { relevant_indices: [], needs_full_content: false, reasoning: 'Parse error' }
       }
 
-      const relevantIndices = Array.isArray(analysis.relevant_indices) ? analysis.relevant_indices : []
+      const relevantIndices: number[] = Array.isArray(analysis.relevant_indices) ? analysis.relevant_indices : []
       const needsFullContent = analysis.needs_full_content === true
 
       if (relevantIndices.length === 0) {
@@ -141,8 +141,8 @@ Examples of questions that don't need full content:
 
       // Filter to valid indices
       const relevantUrls = relevantIndices
-        .filter(i => i >= 0 && i < contextUrls.length)
-        .map(i => contextUrls[i])
+        .filter((i: number) => i >= 0 && i < contextUrls.length)
+        .map((i: number) => contextUrls[i])
 
       if (relevantUrls.length === 0) {
         return ''
