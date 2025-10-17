@@ -45,7 +45,7 @@ export interface Message extends CosmicObject {
 
 // Context URL type
 export interface ContextUrl extends CosmicObject {
-  type: 'context_urls'
+  type: 'context-urls'
   metadata: {
     url: string
     summary: string
@@ -133,5 +133,5 @@ export function isTeamMember(obj: CosmicObject): obj is TeamMember {
 }
 
 export function isContextUrl(obj: CosmicObject): obj is ContextUrl {
-  return obj.type === 'context_urls'
+  return obj.type === 'context-urls'
 }

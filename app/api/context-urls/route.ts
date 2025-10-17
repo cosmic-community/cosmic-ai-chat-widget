@@ -5,7 +5,7 @@ import { ContextUrl } from '@/types'
 export async function GET() {
   try {
     const response = await cosmic.objects
-      .find({ type: 'context_urls' })
+      .find({ type: 'context-urls' })
       .props(['id', 'title', 'slug', 'metadata'])
       .depth(1)
 
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
 
     const response = await cosmic.objects.insertOne({
       title,
-      type: 'context_urls',
+      type: 'context-urls',
       metadata: {
         url,
         summary: '', // Will be populated by a background process

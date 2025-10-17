@@ -71,7 +71,7 @@ export class CosmicAI {
       // Fetch all active context URLs
       const response = await cosmic.objects
         .find({
-          type: 'context_urls',
+          type: 'context-urls',
           'metadata.is_active': true
         })
         .props(['id', 'title', 'metadata'])
