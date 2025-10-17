@@ -75,6 +75,11 @@ Reply with ONLY the numbers (comma-separated) of relevant sources, or "NONE" if 
 
       const contextParts = await Promise.all(
         relevantUrls.map(async (url) => {
+          // Changed: Added null check for url parameter
+          if (!url) {
+            return ''
+          }
+          
           // If content is not cached, fetch it
           let content = url.metadata.content || ''
           
