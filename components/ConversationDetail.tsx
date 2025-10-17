@@ -83,11 +83,11 @@ export default function ConversationDetail({ conversationId }: ConversationDetai
     }
   }
 
-  // Helper function to get status display text
-  const getStatusText = (status: string | { key: string; value: string } | undefined): string => {
+  // Helper function to get status display value
+  const getStatusDisplay = (status?: string | { key: string; value: string }) => {
     if (!status) return 'active'
     if (typeof status === 'string') return status
-    return status.value || status.key || 'active'
+    return status.value || 'active'
   }
 
   if (isLoading) {
@@ -143,11 +143,11 @@ export default function ConversationDetail({ conversationId }: ConversationDetai
           </div>
 
           <span className={`px-4 py-2 text-sm font-medium rounded-full ${
-            getStatusText(conversation.metadata?.status) === 'active' 
+            getStatusDisplay(conversation.metadata?.status) === 'active' 
               ? 'bg-accent/10 text-accent'
               : 'bg-gray-100 text-gray-600'
           }`}>
-            {getStatusText(conversation.metadata?.status)}
+            {getStatusDisplay(conversation.metadata?.status)}
           </span>
         </div>
       </div>
