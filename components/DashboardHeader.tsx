@@ -2,16 +2,7 @@
 
 import Link from 'next/link'
 
-interface DashboardHeaderProps {
-  user?: {
-    id: string
-    email: string
-    name: string
-    role: string
-  }
-}
-
-export default function DashboardHeader({ user }: DashboardHeaderProps) {
+export default function DashboardHeader() {
   return (
     <header className="bg-white border-b border-border">
       <div className="container mx-auto px-4 py-4">
@@ -29,17 +20,15 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
           </Link>
 
           <div className="flex items-center gap-4">
-            {user && (
-              <div className="flex items-center gap-3 text-sm">
-                <div className="text-right">
-                  <p className="font-medium">{user.name}</p>
-                  <p className="text-gray-500">{user.role}</p>
-                </div>
-                <div className="w-8 h-8 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center text-white font-bold text-sm">
-                  {user.name.charAt(0).toUpperCase()}
-                </div>
+            <div className="flex items-center gap-3 text-sm">
+              <div className="text-right">
+                <p className="font-medium">Admin User</p>
+                <p className="text-gray-500">Administrator</p>
               </div>
-            )}
+              <div className="w-8 h-8 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center text-white font-bold text-sm">
+                A
+              </div>
+            </div>
             <Link
               href="/demo"
               className="bg-secondary hover:bg-gray-200 text-secondary-foreground px-4 py-2 rounded-lg font-medium transition-colors"
