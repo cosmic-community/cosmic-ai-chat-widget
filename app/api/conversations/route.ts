@@ -23,6 +23,9 @@ export async function GET() {
       return NextResponse.json({ conversations: [] })
     }
     console.error('Error fetching conversations:', error)
-    return NextResponse.json({ error: 'Failed to fetch conversations' }, { status: 500 })
+    return NextResponse.json({ 
+      error: 'Failed to fetch conversations',
+      conversations: [] 
+    }, { status: 500 })
   }
 }

@@ -8,6 +8,7 @@ import Link from 'next/link'
 export default function ConversationList() {
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     fetchConversations()
@@ -15,11 +16,18 @@ export default function ConversationList() {
 
   const fetchConversations = async () => {
     try {
+      setError(null)
       const response = await fetch('/api/conversations')
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
       const data = await response.json()
       setConversations(data.conversations || [])
     } catch (error) {
       console.error('Error fetching conversations:', error)
+      setError('Failed to load conversations. Please try again.')
     } finally {
       setIsLoading(false)
     }
@@ -29,6 +37,22 @@ export default function ConversationList() {
     return (
       <div className="flex justify-center py-12">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm p-12 text-center">
+        <div className="text-6xl mb-4">⚠️</div>
+        <h3 className="text-xl font-semibold mb-2 text-red-600">Error Loading Conversations</h3>
+        <p className="text-gray-600 mb-4">{error}</p>
+        <button
+          onClick={fetchConversations}
+          className="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-md font-medium transition-colors"
+        >
+          Try Again
+        </button>
       </div>
     )
   }
@@ -58,7 +82,7 @@ export default function ConversationList() {
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-10 h-10 bg-gradient-to-r from-primary to-accent rounded-full flex items-center justify-center text-white font-semibold">
-                    {((conversation.metadata?.visitor_name || 'A')[0] || 'A').toUpperCase()}
+                    {((conversation.metadata?.visitor_name || 'Anonymous')[0] || 'A').toUpperCase()}
                   </div>
                   <div>
                     <h3 className="font-semibold">
@@ -87,7 +111,13 @@ export default function ConversationList() {
                       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                       </svg>
-                      {new URL(conversation.metadata.website_url).hostname}
+                      {(() => {
+                        try {
+                          return new URL(conversation.metadata.website_url).hostname
+                        } catch {
+                          return 'Invalid URL'
+                        }
+                      })()}
                     </span>
                   )}
                 </div>
@@ -95,7 +125,7 @@ export default function ConversationList() {
 
               <div className="flex flex-col items-end gap-2">
                 <span className={`px-3 py-1 text-xs font-medium rounded-full ${
-                  conversation.metadata?.status === 'active' 
+                  conversation.metadata?.status?.toLowerCase() === 'active' 
                     ? 'bg-accent/10 text-accent'
                     : 'bg-gray-100 text-gray-600'
                 }`}>
