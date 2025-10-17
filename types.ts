@@ -10,6 +10,12 @@ export interface CosmicObject {
   modified_at: string
 }
 
+// Status object type for select-dropdown metafields
+export interface StatusObject {
+  key: string
+  value: string
+}
+
 // Conversation type
 export interface Conversation extends CosmicObject {
   type: 'conversations'
@@ -17,7 +23,7 @@ export interface Conversation extends CosmicObject {
     visitor_email?: string
     visitor_name?: string
     website_url?: string
-    status?: string
+    status?: string | StatusObject
     last_message?: string
     last_message_at?: string
     unread_count?: number

@@ -33,6 +33,20 @@ export default function ConversationList() {
     }
   }
 
+  const getStatusValue = (status: any): string => {
+    if (typeof status === 'string') return status
+    if (status && typeof status === 'object' && status.key) return status.key
+    if (status && typeof status === 'object' && status.value) return status.value
+    return 'active'
+  }
+
+  const getStatusDisplay = (status: any): string => {
+    if (typeof status === 'string') return status
+    if (status && typeof status === 'object' && status.value) return status.value
+    if (status && typeof status === 'object' && status.key) return status.key
+    return 'Active'
+  }
+
   if (isLoading) {
     return (
       <div className="flex justify-center py-12">
@@ -125,11 +139,11 @@ export default function ConversationList() {
 
               <div className="flex flex-col items-end gap-2">
                 <span className={`px-3 py-1 text-xs font-medium rounded-full ${
-                  conversation.metadata?.status?.toLowerCase() === 'active' 
+                  getStatusValue(conversation.metadata?.status).toLowerCase() === 'active' 
                     ? 'bg-accent/10 text-accent'
                     : 'bg-gray-100 text-gray-600'
                 }`}>
-                  {conversation.metadata?.status || 'active'}
+                  {getStatusDisplay(conversation.metadata?.status)}
                 </span>
                 
                 {conversation.metadata?.unread_count && conversation.metadata.unread_count > 0 && (
