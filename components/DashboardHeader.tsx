@@ -1,16 +1,8 @@
 'use client'
 
-import { signOut } from 'next-auth/react'
 import Link from 'next/link'
 
-interface DashboardHeaderProps {
-  user: {
-    name?: string | null
-    email?: string | null
-  }
-}
-
-export default function DashboardHeader({ user }: DashboardHeaderProps) {
+export default function DashboardHeader() {
   return (
     <header className="bg-white border-b border-border">
       <div className="container mx-auto px-4 py-4">
@@ -28,16 +20,12 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
           </Link>
 
           <div className="flex items-center gap-4">
-            <div className="text-right">
-              <p className="text-sm font-medium">{user.name}</p>
-              <p className="text-xs text-gray-500">{user.email}</p>
-            </div>
-            <button
-              onClick={() => signOut({ callbackUrl: '/dashboard/login' })}
+            <Link
+              href="/demo"
               className="bg-secondary hover:bg-gray-200 text-secondary-foreground px-4 py-2 rounded-lg font-medium transition-colors"
             >
-              Sign Out
-            </button>
+              View Demo
+            </Link>
           </div>
         </div>
       </div>

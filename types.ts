@@ -11,7 +11,6 @@ export interface CosmicObject {
 }
 
 // Conversation type
-// Conversation type
 export interface Conversation extends CosmicObject {
   type: 'conversations'
   metadata: {
@@ -35,6 +34,18 @@ export interface Message extends CosmicObject {
     sender_name?: string
     ai_response?: boolean
     timestamp: string
+  }
+}
+
+// Context URL type
+export interface ContextUrl extends CosmicObject {
+  type: 'context_urls'
+  metadata: {
+    url: string
+    summary: string
+    content?: string
+    last_fetched?: string
+    is_active: boolean
   }
 }
 
@@ -102,14 +113,6 @@ export interface SendMessageData {
   visitorEmail?: string
 }
 
-// NextAuth types
-export interface User {
-  id: string
-  email: string
-  name: string
-  role: TeamMemberRole
-}
-
 // Type guards
 export function isConversation(obj: CosmicObject): obj is Conversation {
   return obj.type === 'conversations'
@@ -121,4 +124,8 @@ export function isMessage(obj: CosmicObject): obj is Message {
 
 export function isTeamMember(obj: CosmicObject): obj is TeamMember {
   return obj.type === 'team_members'
+}
+
+export function isContextUrl(obj: CosmicObject): obj is ContextUrl {
+  return obj.type === 'context_urls'
 }
